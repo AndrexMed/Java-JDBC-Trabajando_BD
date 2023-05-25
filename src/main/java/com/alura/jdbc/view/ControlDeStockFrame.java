@@ -55,7 +55,6 @@ public class ControlDeStockFrame extends JFrame {
         modelo.addColumn("Identificador del Producto");
         modelo.addColumn("Nombre del Producto");
         modelo.addColumn("Descripción del Producto");
-        modelo.addColumn("Precio del Producto");
         modelo.addColumn("Cantidad del Producto");
 
         cargarTabla();
@@ -126,6 +125,8 @@ public class ControlDeStockFrame extends JFrame {
         container.add(botonLimpiar);
     }
 
+    //Escuchador de EVENTOS para los Botones...
+    
     private void configurarAccionesDelFormulario() {
         botonGuardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -218,11 +219,12 @@ public class ControlDeStockFrame extends JFrame {
                 // Se itera sobre la lista de productos utilizando el método forEach().
                 //Dentro del bucle, se accede a los valores de cada producto utilizando los nombres de los campos como claves en el mapa (producto.get("ID"), producto.get("NOMBRE"), etc.).
                 //Se agrega una nueva fila a la tabla (modelo.addRow(...)) utilizando los valores obtenidos del producto actual. Los valores se pasan como un array de objetos en el orden correspondiente a las columnas de la tabla.
-                productos.forEach(producto -> modelo.addRow(new Object[]{producto.get("ID"),
+                productos.forEach(producto -> modelo.addRow(new Object[] {
+                    producto.get("ID"),
                     producto.get("NOMBRE"),
                     producto.get("DESCRIPCION"),
-                    producto.get("PRECIO"),
-                    producto.get("CANTIDAD")}));
+                    producto.get("CANTIDAD")
+                }));
             } catch (Exception e) {
                 throw e;
             }

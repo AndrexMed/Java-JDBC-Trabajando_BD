@@ -26,7 +26,7 @@ public class ProductoController {
         Connection conexion= new ConnectionFactory().recuperarConexion();
         
         // Crear la consulta SELECT
-        String consulta = "SELECT ID, NOMBRE, DESCRIPCION, PRECIO, CANTIDAD FROM PRODUCTOS";
+        String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS";
 
         // Crear el objeto Statement
         Statement statement = conexion.createStatement();
@@ -48,7 +48,6 @@ public class ProductoController {
             fila.put("ID", String.valueOf(resultSet.getInt("ID")));
             fila.put("NOMBRE", resultSet.getString("NOMBRE"));
             fila.put("DESCRIPCION", resultSet.getString("DESCRIPCION"));
-            fila.put("PRECIO", String.valueOf(resultSet.getDouble("PRECIO")));
             fila.put("CANTIDAD", String.valueOf(resultSet.getInt("CANTIDAD")));
 
             //El mapa fila se agrega a la lista resultado.
