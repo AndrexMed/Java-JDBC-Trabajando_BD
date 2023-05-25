@@ -7,10 +7,7 @@ import java.sql.SQLException;
 public class PruebaConexion {
 
     public static void main(String[] args) throws SQLException {
-        Connection con = DriverManager.getConnection(
-                "jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC",
-                "root",
-                "root1234");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/control-de-stock","root","");
 
         System.out.println("Cerrando la conexión");
 

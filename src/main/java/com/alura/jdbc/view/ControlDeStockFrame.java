@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.alura.jdbc.controller.CategoriaController;
 import com.alura.jdbc.controller.ProductoController;
+import java.sql.SQLException;
 
 public class ControlDeStockFrame extends JFrame {
 
@@ -208,8 +209,11 @@ public class ControlDeStockFrame extends JFrame {
     }
 
     private void cargarTabla() {
+        try{
         var productos = this.productoController.listar();
-
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
         try {
             // TODO
             // productos.forEach(producto -> modelo.addRow(new Object[] { "id", "nombre",
