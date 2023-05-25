@@ -1,7 +1,7 @@
 package com.alura.jdbc.controller;
 
+import com.alura.jdbc.factory.ConnectionFactory;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,9 +22,9 @@ public class ProductoController {
 
     public List<Map<String, String>> listar() throws SQLException {
 
-        // Configurar la conexión a la base de datos
-        Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/control-de-stock", "root", "");
-
+        // Hacemos una instancia de la clase que contiene el metodo para establecer conexion con la BD.
+        Connection conexion= new ConnectionFactory().recuperarConexion();
+        
         // Crear la consulta SELECT
         String consulta = "SELECT ID, NOMBRE, DESCRIPCION, PRECIO, CANTIDAD FROM PRODUCTOS";
 
