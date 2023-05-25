@@ -59,7 +59,7 @@ public class ProductoController {
         return resultado;
     }
 
-    public void guardar(Object producto) {
+    public void guardar(Map<String, String> producto) {
         // TODO
     }
 
