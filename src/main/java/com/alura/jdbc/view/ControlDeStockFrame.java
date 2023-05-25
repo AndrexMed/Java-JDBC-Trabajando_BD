@@ -127,7 +127,6 @@ public class ControlDeStockFrame extends JFrame {
     }
 
     //Escuchador de EVENTOS para los Botones...
-    
     private void configurarAccionesDelFormulario() {
         botonGuardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -220,7 +219,7 @@ public class ControlDeStockFrame extends JFrame {
                 // Se itera sobre la lista de productos utilizando el método forEach().
                 //Dentro del bucle, se accede a los valores de cada producto utilizando los nombres de los campos como claves en el mapa (producto.get("ID"), producto.get("NOMBRE"), etc.).
                 //Se agrega una nueva fila a la tabla (modelo.addRow(...)) utilizando los valores obtenidos del producto actual. Los valores se pasan como un array de objetos en el orden correspondiente a las columnas de la tabla.
-                productos.forEach(producto -> modelo.addRow(new Object[] {
+                productos.forEach(producto -> modelo.addRow(new Object[]{
                     producto.get("ID"),
                     producto.get("NOMBRE"),
                     producto.get("DESCRIPCION"),
@@ -253,14 +252,17 @@ public class ControlDeStockFrame extends JFrame {
 
         // TODO
         var producto = new HashMap<String, String>();
-        producto.put("NOMBRE",textoNombre.getText());
-        producto.put("DESCRIPCION",textoDescripcion.getText());
-        producto.put("CANTIDAD",String.valueOf(cantidadInt));
-        
+        producto.put("NOMBRE", textoNombre.getText());
+        producto.put("DESCRIPCION", textoDescripcion.getText());
+        producto.put("CANTIDAD", String.valueOf(cantidadInt));
+
         var categoria = comboCategoria.getSelectedItem();
 
-        this.productoController.guardar(producto);
-
+        try {
+            this.productoController.guardar(producto);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         JOptionPane.showMessageDialog(this, "Registrado con éxito!");
 
         this.limpiarFormulario();
