@@ -55,6 +55,8 @@ public class ControlDeStockFrame extends JFrame {
         modelo.addColumn("Identificador del Producto");
         modelo.addColumn("Nombre del Producto");
         modelo.addColumn("Descripción del Producto");
+        modelo.addColumn("Precio del Producto");
+        modelo.addColumn("Cantidad del Producto");
 
         cargarTabla();
 
@@ -209,17 +211,24 @@ public class ControlDeStockFrame extends JFrame {
     }
 
     private void cargarTabla() {
-        try{
-        var productos = this.productoController.listar();
-        }catch(SQLException e){
-            throw new RuntimeException(e);
-        }
         try {
-            // TODO
-            // productos.forEach(producto -> modelo.addRow(new Object[] { "id", "nombre",
-            // "descripcion" }));
-        } catch (Exception e) {
-            throw e;
+            var productos = this.productoController.listar(); //Se llama al método listar() del controlador de productos (productoController) para obtener una lista de productos, Ejecuta una consulta SELECT en la base de datos y devuelve los resultados como una lista de mapas.
+
+            try {
+                // Se itera sobre la lista de productos utilizando el método forEach().
+                //Dentro del bucle, se accede a los valores de cada producto utilizando los nombres de los campos como claves en el mapa (producto.get("ID"), producto.get("NOMBRE"), etc.).
+                //Se agrega una nueva fila a la tabla (modelo.addRow(...)) utilizando los valores obtenidos del producto actual. Los valores se pasan como un array de objetos en el orden correspondiente a las columnas de la tabla.
+                productos.forEach(producto -> modelo.addRow(new Object[]{producto.get("ID"),
+                    producto.get("NOMBRE"),
+                    producto.get("DESCRIPCION"),
+                    producto.get("PRECIO"),
+                    producto.get("CANTIDAD")}));
+            } catch (Exception e) {
+                throw e;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -240,7 +249,7 @@ public class ControlDeStockFrame extends JFrame {
         }
 
         // TODO
-        var producto = new Object[] { textoNombre.getText(), textoDescripcion.getText(), cantidadInt };
+        var producto = new Object[]{textoNombre.getText(), textoDescripcion.getText(), cantidadInt};
         var categoria = comboCategoria.getSelectedItem();
 
         this.productoController.guardar(producto);
