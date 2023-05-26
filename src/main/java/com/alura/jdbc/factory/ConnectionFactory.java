@@ -13,10 +13,18 @@ public class ConnectionFactory {
     //Metodo para establecer conexion
     public Connection recuperarConexion() throws SQLException {
         
-        // Configurar la conexión a la base de datos
-       return  DriverManager.getConnection("jdbc:mysql://localhost:3306/control-de-stock",
+        // Configurar la conexión a la base de datos con MYSQL
+       /*return  DriverManager.getConnection("jdbc:mysql://localhost:3306/control-de-stock",
                                             "root",
-                                               "");
-
+                                               "");*/
+       
+        // Configurar la conexión a la base de datos con SQL SERVER
+       return DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+                + "database=control_de_stock;"
+                + "user=Andrex;"
+                + "password=andres01;"
+                + "loginTimeout=30;"
+                + "TrustServerCertificate=True;");
+       
     }
 }
