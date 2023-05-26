@@ -173,11 +173,16 @@ public class ControlDeStockFrame extends JFrame {
         modelo.getDataVector().clear();
     }
 
+    /*Este metodo se encarga de verificar si existe un elemento seleccionado en la tabla...
+    Retorna True SI no hay nada seleccionado...
+    False si hay un elemento seleccionado...
+     */
     private boolean tieneFilaElegida() {
         return tabla.getSelectedRowCount() == 0 || tabla.getSelectedColumnCount() == 0;
     }
 
     private void modificar() {
+        //Si tieneFilaElegida(), es True arroja entra aqui...
         if (tieneFilaElegida()) {
             JOptionPane.showMessageDialog(this, "Por favor, elije un item");
             return;
@@ -185,15 +190,29 @@ public class ControlDeStockFrame extends JFrame {
 
         Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
                 .ifPresentOrElse(fila -> {
-                    Integer id = (Integer) modelo.getValueAt(tabla.getSelectedRow(), 0);
+
+                    // Integer id = (Integer) modelo.getValueAt(tabla.getSelectedRow(), 0);
+                    /* Cuando damos clic al boton "modificar", ejecuta esta linea que genera una exeption,
+                    ya que estamos haciendo un casting explicito invalido, tratando de convertir String a Int
+                     */
+                    
+                    Integer id = Integer.parseInt(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+                    // En este caso, el método toString() se utiliza para obtener el valor como una cadena de texto,
+                    // y luego se utiliza Integer.parseInt() para convertir esa cadena en un entero.
+
                     String nombre = (String) modelo.getValueAt(tabla.getSelectedRow(), 1);
                     String descripcion = (String) modelo.getValueAt(tabla.getSelectedRow(), 2);
-
+                    Integer cantidad = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 3).toString());
+                    /*
+                    También tenemos que agregar el campo de cantidad, que no está presente en la lógica pero es importante que también pueda ser modificado.
+                    */
+                    
                     this.productoController.modificar(nombre, descripcion, id);
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 
     private void eliminar() {
+        //Si este metodo es True, Entra en esta condicion...mostrando el mensaje...
         if (tieneFilaElegida()) {
             JOptionPane.showMessageDialog(this, "Por favor, elije un item");
             return;
@@ -201,10 +220,12 @@ public class ControlDeStockFrame extends JFrame {
 
         Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
                 .ifPresentOrElse(fila -> {
+                    
+                    //Aqui tambien habia un casting explicito, este seria la conversion Correcta...
                     Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
 
                     int cantidadEliminada;
-                    
+
                     try {
                         cantidadEliminada = this.productoController.eliminar(id);
                     } catch (Exception e) {
@@ -213,7 +234,7 @@ public class ControlDeStockFrame extends JFrame {
 
                     modelo.removeRow(tabla.getSelectedRow());
 
-                    JOptionPane.showMessageDialog(this, cantidadEliminada+" Item eliminado con éxito!");
+                    JOptionPane.showMessageDialog(this, cantidadEliminada + " Item eliminado con éxito!");
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 
