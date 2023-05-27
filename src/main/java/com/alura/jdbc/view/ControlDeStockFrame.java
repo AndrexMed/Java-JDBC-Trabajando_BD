@@ -207,7 +207,14 @@ public class ControlDeStockFrame extends JFrame {
                     También tenemos que agregar el campo de cantidad, que no está presente en la lógica pero es importante que también pueda ser modificado.
                     */
                     
-                    this.productoController.modificar(nombre, descripcion, id);
+                    int filasModificadas;
+                    
+                    try{
+                    filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
+                    } catch(SQLException e){
+                        throw new RuntimeException(e);
+                    }
+                    
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 

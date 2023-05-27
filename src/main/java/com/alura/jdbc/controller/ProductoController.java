@@ -12,8 +12,36 @@ import java.util.Map;
 
 public class ProductoController {
 
-    public void modificar(String nombre, String descripcion, Integer id) {
+    public int modificar(String nombre, String descripcion, Integer cantidad ,Integer id) throws SQLException {
         // TODO
+        
+        //Creamos la conexion...
+        Connection conexion = new ConnectionFactory().recuperarConexion();
+        
+        //Creamos el objeto Statement
+        Statement statement = conexion.createStatement();
+        
+        //Creamos la consulta SQL
+        String consulta = "INSERT INTO PRODUCTOS (nombre, descripcion, cantidad) VALUES ('" + nombre + "', '" + descripcion + "', " + cantidad + ")";
+        
+        /* Esta consulta tiene un error pendiente por revisar...
+        String consulta = "UPDATE PRODUCTOS SET "
+                + " NOMBRE = '" + nombre + "'"
+                + ", DESCRIPCION = '" + descripcion + "'"
+                + ", CANTIDAD = '" + cantidad + "'"
+                + " WHERE ID = " + id; */
+        
+        //Ejecutamos la consulta
+        statement.execute(consulta);
+        
+        int updateCount = statement.getUpdateCount();
+        
+        System.out.println("Se actualizo un dato con el id: "+id);
+        
+        conexion.close();
+        
+        return updateCount;
+        
     }
 
     public int eliminar(Integer idEntrante) throws SQLException {
@@ -29,6 +57,8 @@ public class ProductoController {
         
         //Ejecutamos la consulta...
         statement.execute(consulta);
+        
+        System.out.println("Se elimino el producto: "+idEntrante);
         
         return statement.getUpdateCount(); //Retorna un INT con el num de filas modificadas...
     }
