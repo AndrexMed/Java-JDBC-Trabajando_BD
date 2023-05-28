@@ -17,146 +17,152 @@ public class ProductoController {
         // TODO
 
         //Creamos la conexion...
-        Connection conexion = new ConnectionFactory().recuperarConexion();
+        final Connection conexion = new ConnectionFactory().recuperarConexion();
 
-        //Creamos la consulta SQL Para Actualizar datos...
-        String consultaForma1 = "UPDATE PRODUCTOS SET NOMBRE = ?, DESCRIPCION = ?, CANTIDAD = ? WHERE ID = ?";
-        String consultaForma2 = "UPDATE PRODUCTOS SET "
-                + "nombre = ?,"
-                + "descripcion = ?,"
-                + "cantidad = ?"
-                + " WHERE id = ?";
+        try (conexion) {
+            //Creamos la consulta SQL Para Actualizar datos...
+            String consultaForma1 = "UPDATE PRODUCTOS SET NOMBRE = ?, DESCRIPCION = ?, CANTIDAD = ? WHERE ID = ?";
+            String consultaForma2 = "UPDATE PRODUCTOS SET "
+                    + "nombre = ?,"
+                    + "descripcion = ?,"
+                    + "cantidad = ?"
+                    + " WHERE id = ?";
 
-        //Creamos un objeto de tipo PreparedStatement llamado statement utilizando una conexión establecida previamente (conexion).
-        PreparedStatement statement = conexion.prepareStatement(consultaForma1);
+            //Creamos un objeto de tipo PreparedStatement llamado statement utilizando una conexión establecida previamente (conexion).
+            final PreparedStatement statement = conexion.prepareStatement(consultaForma1);
 
-        /*Este código se utiliza para asignar valores a los parámetros de un PreparedStatement en Java,
+            try (statement) {
+                /*Este código se utiliza para asignar valores a los parámetros de un PreparedStatement en Java,
         lo que permitirá ejecutar consultas SQL parametrizadas con los valores especificados.*/
-        statement.setString(1, nombre);
-        statement.setString(2, descripcion);
-        statement.setInt(3, cantidad);
-        statement.setInt(4, idEntrante);
+                statement.setString(1, nombre);
+                statement.setString(2, descripcion);
+                statement.setInt(3, cantidad);
+                statement.setInt(4, idEntrante);
 
-        statement.execute();
+                statement.execute();
 
-        int updateCount = statement.getUpdateCount();
+                int updateCount = statement.getUpdateCount();
 
-        System.out.println("Se actualizo un dato con el id: " + idEntrante);
+                System.out.println("Se actualizo un dato con el id: " + idEntrante);
 
-        conexion.close();
-
-        return updateCount;
-
+                return updateCount;
+            }
+        }
     }
 
     public int eliminar(Integer idEntrante) throws SQLException {
         // TODO
 
         //Creamos la conexion instanciando la clase...
-        Connection conexion = new ConnectionFactory().recuperarConexion();
+        final Connection conexion = new ConnectionFactory().recuperarConexion();
 
         //Consulta sql
         String consulta = "DELETE FROM PRODUCTOS WHERE ID = ?";
 
-        PreparedStatement statement = conexion.prepareStatement(consulta);
+        try (conexion) {
+            final PreparedStatement statement = conexion.prepareStatement(consulta);
 
-        //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
-        statement.setInt(1, idEntrante);
+            try (statement) {
+                //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
+                statement.setInt(1, idEntrante);
 
-        //Ejecutamos la consulta...
-        statement.execute();
+                //Ejecutamos la consulta...
+                statement.execute();
 
-        System.out.println("Se elimino el producto: " + idEntrante);
+                System.out.println("Se elimino el producto: " + idEntrante);
 
-        return statement.getUpdateCount(); //Retorna un INT con el num de filas modificadas...
+                return statement.getUpdateCount(); //Retorna un INT con el num de filas modificadas...
+            }
+        }
     }
 
     public List<Map<String, String>> listar() throws SQLException {
 
         // Hacemos una instancia de la clase que contiene el metodo para establecer conexion con la BD.
-        Connection conexion = new ConnectionFactory().recuperarConexion();
+        final Connection conexion = new ConnectionFactory().recuperarConexion();
 
         // Crear la consulta SELECT
         String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS";
 
-        // Crear el objeto Statement
-        PreparedStatement statement = conexion.prepareStatement(consulta);
+        try (conexion) {
+            // Crear el objeto Statement
+            final PreparedStatement statement = conexion.prepareStatement(consulta);
 
-        // Ejecutar la consulta
-        statement.execute();
+            try (statement) {
+                // Ejecutar la consulta
+                statement.execute();
 
-        //Obtener los resultados
-        ResultSet resultSet = statement.getResultSet();
+                //Obtener los resultados
+                ResultSet resultSet = statement.getResultSet();
 
-        /*Creamos una Lista*/
-        List<Map<String, String>> resultado = new ArrayList<>();
+                /*Creamos una Lista*/
+                List<Map<String, String>> resultado = new ArrayList<>();
 
-        while (resultSet.next()) { //Se itera sobre los resultados utilizando el método next() del objeto ResultSet*/
+                while (resultSet.next()) { //Se itera sobre los resultados utilizando el método next() del objeto ResultSet*/
 
-            /*En cada iteración, se crea un nuevo mapa (fila) y se agregan pares clave-valor para cada campo obtenido del resultado actual.*/
-            Map<String, String> fila = new HashMap<>();
+                    /*En cada iteración, se crea un nuevo mapa (fila) y se agregan pares clave-valor para cada campo obtenido del resultado actual.*/
+                    Map<String, String> fila = new HashMap<>();
 
-            fila.put("ID", String.valueOf(resultSet.getInt("ID")));
-            fila.put("NOMBRE", resultSet.getString("NOMBRE"));
-            fila.put("DESCRIPCION", resultSet.getString("DESCRIPCION"));
-            fila.put("CANTIDAD", String.valueOf(resultSet.getInt("CANTIDAD")));
+                    fila.put("ID", String.valueOf(resultSet.getInt("ID")));
+                    fila.put("NOMBRE", resultSet.getString("NOMBRE"));
+                    fila.put("DESCRIPCION", resultSet.getString("DESCRIPCION"));
+                    fila.put("CANTIDAD", String.valueOf(resultSet.getInt("CANTIDAD")));
 
-            //El mapa fila se agrega a la lista resultado.
-            resultado.add(fila);
+                    //El mapa fila se agrega a la lista resultado.
+                    resultado.add(fila);
+                }
+                return resultado;
+            }
         }
-
-        //Finalmente, se cierra la conexión a la base de datos y se devuelve la lista resultado.
-        conexion.close();
-        return resultado;
     }
 
     public void guardar(Map<String, String> producto) throws SQLException {
 
         //Establecemos la conexion, Instanciando la clase.
-        Connection conexion = new ConnectionFactory().recuperarConexion();
-        conexion.setAutoCommit(false); //Este codigo hace que tomemos el control de toda la transaccion...
+        final Connection conexion = new ConnectionFactory().recuperarConexion();
 
-        // Obtenemos los datos del Map Entrante, en variables...
-        String nombre = producto.get("NOMBRE");
-        String descripcion = producto.get("DESCRIPCION");
-        int cantidad = Integer.valueOf(producto.get("CANTIDAD")); //Convertimos la CANTIDAD, que entra como String, a int...
+        try (conexion) {
+            conexion.setAutoCommit(false); //Este codigo hace que tomemos el control de toda la transaccion...
 
-        Integer cantidadMaxima = 50;
+            // Obtenemos los datos del Map Entrante, en variables...
+            String nombre = producto.get("NOMBRE");
+            String descripcion = producto.get("DESCRIPCION");
+            int cantidad = Integer.valueOf(producto.get("CANTIDAD")); //Convertimos la CANTIDAD, que entra como String, a int...
 
-        //Almacenamos el nombre de la tabla para mejor organizacion.
-        String nombreTabla = "PRODUCTOS";
+            Integer cantidadMaxima = 50;
 
-        // Construimos la consulta SQL, concatenando...
-        //Cambiamos los parametros que van a ser enviados por "?", debido al PreparedStatement...
-        String consulta = "INSERT INTO " + nombreTabla + " (nombre, descripcion, cantidad) VALUES (? , ? , ?)";
+            //Almacenamos el nombre de la tabla para mejor organizacion.
+            String nombreTabla = "PRODUCTOS";
 
-        /*Se crea un objeto Statement llamado "statement" utilizando el método "createStatement()"
+            // Construimos la consulta SQL, concatenando...
+            //Cambiamos los parametros que van a ser enviados por "?", debido al PreparedStatement...
+            String consulta = "INSERT INTO " + nombreTabla + " (nombre, descripcion, cantidad) VALUES (? , ? , ?)";
+
+            /*Se crea un objeto Statement llamado "statement" utilizando el método "createStatement()"
         de la conexión. Un objeto Statement se utiliza para ejecutar instrucciones SQL en la base de datos.*/
-        //Cambiamos el createStatement por PreparedStatement, ya que este nos previene se Inyecciones SQL
-        PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
+            //Cambiamos el createStatement por PreparedStatement, ya que este nos previene se Inyecciones SQL
+            final PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
 
-        try {
-            do {
-                int cantidadParaGuardar = Math.min(cantidad, cantidadMaxima); //Esta funcion me retorna el numero minimo entre AyB...Ej si coloco 60, toma cantidadMaxima que vale 50
+            try (statement) {
+                do {
+                    int cantidadParaGuardar = Math.min(cantidad, cantidadMaxima); //Esta funcion me retorna el numero minimo entre AyB...Ej si coloco 60, toma cantidadMaxima que vale 50
 
-                ejecutarRegistro(statement, nombre, descripcion, cantidadParaGuardar, consulta); //Llamado al metodo enviandole parametros...
+                    ejecutarRegistro(statement, nombre, descripcion, cantidadParaGuardar, consulta); //Llamado al metodo enviandole parametros...
 
-                //Despues de ejecutar el metodo si el usuario ingreso 60 en cantidad, aqui almacenamos los 10 sobrantes
-                cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
-            } while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
+                    //Despues de ejecutar el metodo si el usuario ingreso 60 en cantidad, aqui almacenamos los 10 sobrantes
+                    cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
+                } while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
 
-            conexion.commit();
+                conexion.commit();
 
-            System.out.println("Transaccion Exitosa!");
-        } catch (Exception e) { //Si sucede un error en la transaccion, La BD Se restablece a su estado original...TODO o NADA!
+                System.out.println("Transaccion Exitosa!");
+            } catch (Exception e) { //Si sucede un error en la transaccion, La BD Se restablece a su estado original...TODO o NADA!
 
-            conexion.rollback();
+                conexion.rollback();
 
-            System.out.println("No se pudo completar la Transaccion!");
+                System.out.println("No se pudo completar la Transaccion!");
+            }
         }
-
-        statement.close();
-        conexion.close(); //Faltaba cerrar la conexion...
     }
 
     //Insertamos este codigo dentro de un Metodo...
@@ -178,13 +184,15 @@ public class ProductoController {
         statement.execute();
 
         //Después de ejecutar la consulta con éxito, se llama al método getGeneratedKeys del objeto Statement para obtener un objeto ResultSet que contiene las claves generadas automáticamente por la base de datos.
-        ResultSet resultSet = statement.getGeneratedKeys(); //Este metodo almacena las claves primarias generadas en un metodo "resultSet"
+        final ResultSet resultSet = statement.getGeneratedKeys(); //Este metodo almacena las claves primarias generadas en un metodo "resultSet"
 
         //Iteración del ResultSet: Se utiliza un bucle while para iterar sobre las filas del ResultSet que contiene las claves generadas. En este caso, se espera que haya solo una clave generada.
         //Dentro del bucle, se imprime en la consola el ID del producto insertado utilizando el método getInt(1) del ResultSet.
-        while (resultSet.next()) {
-            System.out.println(String.format("Se inserto el producto con el ID: %d", resultSet.getInt(1)));
-            resultSet.getInt(1);
+        try (resultSet) {
+            while (resultSet.next()) {
+                System.out.println(String.format("Se inserto el producto con el ID: %d", resultSet.getInt(1)));
+                resultSet.getInt(1);
+            }
         }
     }
 
