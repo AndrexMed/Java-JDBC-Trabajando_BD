@@ -12,54 +12,57 @@ import java.util.Map;
 
 public class ProductoController {
 
-    public int modificar(String nombre, String descripcion, Integer cantidad ,Integer id) throws SQLException {
+    public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
         // TODO
-        
+
         //Creamos la conexion...
         Connection conexion = new ConnectionFactory().recuperarConexion();
-        
+
         //Creamos el objeto Statement
         Statement statement = conexion.createStatement();
-        
-        //Creamos la consulta SQL
-        String consulta = "INSERT INTO PRODUCTOS (nombre, descripcion, cantidad) VALUES ('" + nombre + "', '" + descripcion + "', " + cantidad + ")";
-        
+
+        //Creamos la consulta SQL, Correcion de Error de Sintaxis
+        String consulta = "UPDATE PRODUCTOS SET "
+                + "nombre = '" + nombre + "', "
+                + "descripcion = '" + descripcion + "', "
+                + "cantidad = " + cantidad
+                + " WHERE id = " + id;
+
         /* Esta consulta tiene un error pendiente por revisar...
         String consulta = "UPDATE PRODUCTOS SET "
                 + " NOMBRE = '" + nombre + "'"
                 + ", DESCRIPCION = '" + descripcion + "'"
                 + ", CANTIDAD = '" + cantidad + "'"
                 + " WHERE ID = " + id; */
-        
         //Ejecutamos la consulta
         statement.execute(consulta);
-        
+
         int updateCount = statement.getUpdateCount();
-        
-        System.out.println("Se actualizo un dato con el id: "+id);
-        
+
+        System.out.println("Se actualizo un dato con el id: " + id);
+
         conexion.close();
-        
+
         return updateCount;
-        
+
     }
 
     public int eliminar(Integer idEntrante) throws SQLException {
         // TODO
-        
+
         //Creamos la conexion instanciando la clase...
         Connection conexion = new ConnectionFactory().recuperarConexion();
-        
+
         Statement statement = conexion.createStatement();
-        
+
         //Consulta sql
-        String consulta = "DELETE FROM PRODUCTOS WHERE ID = "+idEntrante;
-        
+        String consulta = "DELETE FROM PRODUCTOS WHERE ID = " + idEntrante;
+
         //Ejecutamos la consulta...
         statement.execute(consulta);
-        
-        System.out.println("Se elimino el producto: "+idEntrante);
-        
+
+        System.out.println("Se elimino el producto: " + idEntrante);
+
         return statement.getUpdateCount(); //Retorna un INT con el num de filas modificadas...
     }
 
@@ -115,7 +118,7 @@ public class ProductoController {
         String nombre = producto.get("NOMBRE");
         String descripcion = producto.get("DESCRIPCION");
         String cantidad = producto.get("CANTIDAD");
-        
+
         //Almacenamos el nombre de la tabla para mejor organizacion.
         String nombreTabla = "PRODUCTOS";
 
@@ -123,17 +126,14 @@ public class ProductoController {
         String consulta = "INSERT INTO " + nombreTabla + " (nombre, descripcion, cantidad) VALUES ('" + nombre + "', '" + descripcion + "', '" + cantidad + "')";
 
         //Ejecutamos la consulta.
-        
-        statement.execute(consulta,Statement.RETURN_GENERATED_KEYS);
-        
+        statement.execute(consulta, Statement.RETURN_GENERATED_KEYS);
+
         //Después de ejecutar la consulta con éxito, se llama al método getGeneratedKeys del objeto Statement para obtener un objeto ResultSet que contiene las claves generadas automáticamente por la base de datos.
-        
         ResultSet resultSet = statement.getGeneratedKeys(); //Este metodo almacena las claves primarias generadas en un metodo "resultSet"
-    
-    
+
         //Iteración del ResultSet: Se utiliza un bucle while para iterar sobre las filas del ResultSet que contiene las claves generadas. En este caso, se espera que haya solo una clave generada.
         //Dentro del bucle, se imprime en la consola el ID del producto insertado utilizando el método getInt(1) del ResultSet.
-        while (resultSet.next()) {  
+        while (resultSet.next()) {
             System.out.println(String.format("Se inserto el producto con el ID: %d", resultSet.getInt(1)));
             resultSet.getInt(1);
         }
