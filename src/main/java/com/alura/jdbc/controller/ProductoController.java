@@ -2,9 +2,11 @@ package com.alura.jdbc.controller;
 
 import com.alura.jdbc.factory.ConnectionFactory;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,24 +111,33 @@ public class ProductoController {
 
         //Establecemos la conexion, Instanciando la clase.
         Connection conexion = new ConnectionFactory().recuperarConexion();
-
-        /*Se crea un objeto Statement llamado "statement" utilizando el método "createStatement()"
-        de la conexión. Un objeto Statement se utiliza para ejecutar instrucciones SQL en la base de datos.*/
-        Statement statement = conexion.createStatement();
-
+        
         // Obtenemos los datos del Map Entrante, en variables...
         String nombre = producto.get("NOMBRE");
         String descripcion = producto.get("DESCRIPCION");
-        String cantidad = producto.get("CANTIDAD");
+        int cantidad = Integer.valueOf(producto.get("CANTIDAD")); //Convertimos la CANTIDAD, que entra como String, a int...
 
         //Almacenamos el nombre de la tabla para mejor organizacion.
         String nombreTabla = "PRODUCTOS";
 
         // Construimos la consulta SQL, concatenando...
-        String consulta = "INSERT INTO " + nombreTabla + " (nombre, descripcion, cantidad) VALUES ('" + nombre + "', '" + descripcion + "', '" + cantidad + "')";
+        //Cambiamos los parametros que van a ser enviados por "?", debido al PreparedStatement...
+        String consulta = "INSERT INTO " + nombreTabla + " (nombre, descripcion, cantidad) VALUES (? , ? , ?)";
 
+        /*Se crea un objeto Statement llamado "statement" utilizando el método "createStatement()"
+        de la conexión. Un objeto Statement se utiliza para ejecutar instrucciones SQL en la base de datos.*/
+        //Cambiamos el createStatement por PreparedStatement, ya que este nos previene se Inyecciones SQL
+        PreparedStatement statement = conexion.prepareStatement(consulta,Statement.RETURN_GENERATED_KEYS);
+
+        statement.setString(1, nombre);//Parametro consulta Posicion 1, le enviamos "nombre", que fue el parametro entrante en el map...
+        statement.setString(2, descripcion);//Parametro 2, descripcion...
+        statement.setInt(3, cantidad); //Parametro 3, Cantidad...
+
+        System.out.println(consulta); //Imprimimos la consulta creada en consola...
+        
         //Ejecutamos la consulta.
-        statement.execute(consulta, Statement.RETURN_GENERATED_KEYS);
+        //Con preparedStatement, ya no necesitamos colocar nada dentro de execute...
+        statement.execute();
 
         //Después de ejecutar la consulta con éxito, se llama al método getGeneratedKeys del objeto Statement para obtener un objeto ResultSet que contiene las claves generadas automáticamente por la base de datos.
         ResultSet resultSet = statement.getGeneratedKeys(); //Este metodo almacena las claves primarias generadas en un metodo "resultSet"
