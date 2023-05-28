@@ -14,34 +14,35 @@ import java.util.Map;
 
 public class ProductoController {
 
-    public int modificar(String nombre, String descripcion, Integer cantidad, Integer id) throws SQLException {
+    public int modificar(String nombre, String descripcion, Integer cantidad, Integer idEntrante) throws SQLException {
         // TODO
 
         //Creamos la conexion...
         Connection conexion = new ConnectionFactory().recuperarConexion();
+        
+        //Creamos la consulta SQL Para Actualizar datos...
+        String consultaForma1 = "UPDATE PRODUCTOS SET NOMBRE = ?, DESCRIPCION = ?, CANTIDAD = ? WHERE ID = ?";
+        String consultaForma2 = "UPDATE PRODUCTOS SET "
+                + "nombre = ?,"
+                + "descripcion = ?,"
+                + "cantidad = ?"
+                + " WHERE id = ?";
 
-        //Creamos el objeto Statement
-        Statement statement = conexion.createStatement();
+        //Creamos un objeto de tipo PreparedStatement llamado statement utilizando una conexión establecida previamente (conexion).
+        PreparedStatement statement = conexion.prepareStatement(consultaForma1);
+        
+        /*Este código se utiliza para asignar valores a los parámetros de un PreparedStatement en Java,
+        lo que permitirá ejecutar consultas SQL parametrizadas con los valores especificados.*/
+        statement.setString(1, nombre);
+        statement.setString(2, descripcion);
+        statement.setInt(3, cantidad);
+        statement.setInt(4, idEntrante);
 
-        //Creamos la consulta SQL, Correcion de Error de Sintaxis
-        String consulta = "UPDATE PRODUCTOS SET "
-                + "nombre = '" + nombre + "', "
-                + "descripcion = '" + descripcion + "', "
-                + "cantidad = " + cantidad
-                + " WHERE id = " + id;
-
-        /* Esta consulta tiene un error pendiente por revisar...
-        String consulta = "UPDATE PRODUCTOS SET "
-                + " NOMBRE = '" + nombre + "'"
-                + ", DESCRIPCION = '" + descripcion + "'"
-                + ", CANTIDAD = '" + cantidad + "'"
-                + " WHERE ID = " + id; */
-        //Ejecutamos la consulta
-        statement.execute(consulta);
+        statement.execute();
 
         int updateCount = statement.getUpdateCount();
 
-        System.out.println("Se actualizo un dato con el id: " + id);
+        System.out.println("Se actualizo un dato con el id: " + idEntrante);
 
         conexion.close();
 
@@ -55,13 +56,16 @@ public class ProductoController {
         //Creamos la conexion instanciando la clase...
         Connection conexion = new ConnectionFactory().recuperarConexion();
 
-        Statement statement = conexion.createStatement();
-
         //Consulta sql
-        String consulta = "DELETE FROM PRODUCTOS WHERE ID = " + idEntrante;
+        String consulta = "DELETE FROM PRODUCTOS WHERE ID = ?";
+
+        PreparedStatement statement = conexion.prepareStatement(consulta);
+        
+        //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
+        statement.setInt(1, idEntrante);
 
         //Ejecutamos la consulta...
-        statement.execute(consulta);
+        statement.execute();
 
         System.out.println("Se elimino el producto: " + idEntrante);
 
@@ -77,10 +81,10 @@ public class ProductoController {
         String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS";
 
         // Crear el objeto Statement
-        Statement statement = conexion.createStatement();
+        PreparedStatement statement = conexion.prepareStatement(consulta);
 
         // Ejecutar la consulta
-        statement.execute(consulta);
+        statement.execute();
 
         //Obtener los resultados
         ResultSet resultSet = statement.getResultSet();
@@ -111,7 +115,7 @@ public class ProductoController {
 
         //Establecemos la conexion, Instanciando la clase.
         Connection conexion = new ConnectionFactory().recuperarConexion();
-        
+
         // Obtenemos los datos del Map Entrante, en variables...
         String nombre = producto.get("NOMBRE");
         String descripcion = producto.get("DESCRIPCION");
@@ -127,14 +131,15 @@ public class ProductoController {
         /*Se crea un objeto Statement llamado "statement" utilizando el método "createStatement()"
         de la conexión. Un objeto Statement se utiliza para ejecutar instrucciones SQL en la base de datos.*/
         //Cambiamos el createStatement por PreparedStatement, ya que este nos previene se Inyecciones SQL
-        PreparedStatement statement = conexion.prepareStatement(consulta,Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
 
+        //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
         statement.setString(1, nombre);//Parametro consulta Posicion 1, le enviamos "nombre", que fue el parametro entrante en el map...
         statement.setString(2, descripcion);//Parametro 2, descripcion...
         statement.setInt(3, cantidad); //Parametro 3, Cantidad...
 
         System.out.println(consulta); //Imprimimos la consulta creada en consola...
-        
+
         //Ejecutamos la consulta.
         //Con preparedStatement, ya no necesitamos colocar nada dentro de execute...
         statement.execute();
