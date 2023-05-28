@@ -19,7 +19,7 @@ public class ProductoController {
 
         //Creamos la conexion...
         Connection conexion = new ConnectionFactory().recuperarConexion();
-        
+
         //Creamos la consulta SQL Para Actualizar datos...
         String consultaForma1 = "UPDATE PRODUCTOS SET NOMBRE = ?, DESCRIPCION = ?, CANTIDAD = ? WHERE ID = ?";
         String consultaForma2 = "UPDATE PRODUCTOS SET "
@@ -30,7 +30,7 @@ public class ProductoController {
 
         //Creamos un objeto de tipo PreparedStatement llamado statement utilizando una conexión establecida previamente (conexion).
         PreparedStatement statement = conexion.prepareStatement(consultaForma1);
-        
+
         /*Este código se utiliza para asignar valores a los parámetros de un PreparedStatement en Java,
         lo que permitirá ejecutar consultas SQL parametrizadas con los valores especificados.*/
         statement.setString(1, nombre);
@@ -60,7 +60,7 @@ public class ProductoController {
         String consulta = "DELETE FROM PRODUCTOS WHERE ID = ?";
 
         PreparedStatement statement = conexion.prepareStatement(consulta);
-        
+
         //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
         statement.setInt(1, idEntrante);
 
@@ -115,6 +115,7 @@ public class ProductoController {
 
         //Establecemos la conexion, Instanciando la clase.
         Connection conexion = new ConnectionFactory().recuperarConexion();
+        conexion.setAutoCommit(false); //Este codigo hace que tomemos el control de toda la transaccion...
 
         // Obtenemos los datos del Map Entrante, en variables...
         String nombre = producto.get("NOMBRE");
@@ -122,7 +123,7 @@ public class ProductoController {
         int cantidad = Integer.valueOf(producto.get("CANTIDAD")); //Convertimos la CANTIDAD, que entra como String, a int...
 
         Integer cantidadMaxima = 50;
-        
+
         //Almacenamos el nombre de la tabla para mejor organizacion.
         String nombreTabla = "PRODUCTOS";
 
@@ -135,13 +136,25 @@ public class ProductoController {
         //Cambiamos el createStatement por PreparedStatement, ya que este nos previene se Inyecciones SQL
         PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
 
-        ejecutarRegistro(statement, nombre, descripcion, cantidad, consulta); //Llamado al metodo enviandole parametros...
-        
+        do {
+            int cantidadParaGuardar = Math.min(cantidad, cantidadMaxima); //Esta funcion me retorna el numero minimo entre AyB...Ej si coloco 60, toma cantidadMaxima que vale 50
+
+            ejecutarRegistro(statement, nombre, descripcion, cantidadParaGuardar, consulta); //Llamado al metodo enviandole parametros...
+
+            //Despues de ejecutar el metodo si el usuario ingreso 60 en cantidad, aqui almacenamos los 10 sobrantes
+            cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
+        } while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
+
         conexion.close(); //Faltaba cerrar la conexion...
     }
 
     //Insertamos este codigo dentro de un Metodo...
     public void ejecutarRegistro(PreparedStatement statement, String nombre, String descripcion, int cantidad, String consulta) throws SQLException {
+           //Poniendo a prueba las transacciones, para tomar el control de ellas
+        /*if (cantidad < 50) {
+            throw new RuntimeException("Ocurrio un error!");
+        }*/
+        
         //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
         statement.setString(1, nombre);//Parametro consulta Posicion 1, le enviamos "nombre", que fue el parametro entrante en el map...
         statement.setString(2, descripcion);//Parametro 2, descripcion...
