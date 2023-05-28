@@ -23,8 +23,9 @@ public class ConnectionFactory {
                 + "database=control_de_stock;"
                 + "user=Andrex;"
                 + "password=andres01;"
-                + "loginTimeout=30;"
-                + "TrustServerCertificate=True;");
+                + "loginTimeout=30;" //Este parametro establece el tiempo maximo de espera de conexion...
+                + "TrustServerCertificate=True;"); /*Este ultimo parametro se añadio ya que la BD no tiene un certificado
+                                                     firmado, ya que el servidor esta con fines educativos...*/
        
     }
 }
