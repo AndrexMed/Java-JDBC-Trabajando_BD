@@ -7,13 +7,14 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>Control de Stock</name>
     <description>Proyecto para trabajar con bases de datos con JDBC</description>
-
+    
     <properties>
         <java.version>11</java.version>
     </properties>
     
-    <!-- Dependencias de MYSQL -->
+    
     <dependencies>
+        <!-- Dependencias de MYSQL -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -27,14 +28,12 @@
             <version>12.2.0.jre11</version>
         </dependency>
         
-        <!--Estas dependencias se utilizan para agregar las bibliotecas "c3p0" y "mchange-commons-java" a tu proyecto
-        de Java y aprovechar sus funcionalidades, específicamente para la gestión de conexiones de base de datos y para utilizar utilidades generales en tu aplicación.-->
         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.5.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>mchange-commons-java</artifactId>

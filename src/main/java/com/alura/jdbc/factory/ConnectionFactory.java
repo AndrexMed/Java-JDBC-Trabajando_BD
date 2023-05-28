@@ -1,31 +1,41 @@
 package com.alura.jdbc.factory;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  *
  * @author giova
  */
+//Esta clase actuará como una fábrica para crear y proporcionar conexiones a la base de datos-
 public class ConnectionFactory {
-
-    //Metodo para establecer conexion
-    public Connection recuperarConexion() throws SQLException {
+    
+    private DataSource datasource; //Se utilizará para almacenar el objeto de origen de datos.
+    
+    //El constructor se encarga de configurar el pool de conexiones utilizando c3p0
+    public ConnectionFactory() {    
         
-        // Configurar la conexión a la base de datos con MYSQL
-       /*return  DriverManager.getConnection("jdbc:mysql://localhost:3306/control-de-stock",
-                                            "root",
-                                               "");*/
-       
-        // Configurar la conexión a la base de datos con SQL SERVER
-       return DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
-                + "database=control_de_stock;"
-                + "user=Andrex;"
-                + "password=andres01;"
-                + "loginTimeout=30;" //Este parametro establece el tiempo maximo de espera de conexion...
-                + "TrustServerCertificate=True;"); /*Este ultimo parametro se añadio ya que la BD no tiene un certificado
-                                                     firmado, ya que el servidor esta con fines educativos...*/
-       
+        //Se crea un nuevo objeto ComboPooledDataSource, que es una implementación de DataSource proporcionada por c3p0.
+        var pooledDataSource = new ComboPooledDataSource();
+        
+        //Establecemos los datos de conexion...
+        String urlPoolConexion = "jdbc:sqlserver://localhost:1433;" +
+                                 "database=control_de_stock;" +
+                                 "loginTimeout=30;" +
+                                 "TrustServerCertificate=True;";
+        
+        pooledDataSource.setJdbcUrl(urlPoolConexion);
+        pooledDataSource.setUser("Andrex");
+        pooledDataSource.setPassword("andres01");
+        
+        this.datasource = pooledDataSource; //Almacenamos 
+    }
+
+    //Se encarga de devolver una conexión de la base de datos.
+    //Utiliza el método getConnection() del objeto dataSource para obtener una conexión del pool de conexiones.
+    public Connection recuperarConexion() throws SQLException {
+        return this.datasource.getConnection();
     }
 }
