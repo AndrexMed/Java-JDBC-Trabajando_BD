@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,25 +135,37 @@ public class ProductoController {
         //Cambiamos el createStatement por PreparedStatement, ya que este nos previene se Inyecciones SQL
         PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
 
-        do {
-            int cantidadParaGuardar = Math.min(cantidad, cantidadMaxima); //Esta funcion me retorna el numero minimo entre AyB...Ej si coloco 60, toma cantidadMaxima que vale 50
+        try {
+            do {
+                int cantidadParaGuardar = Math.min(cantidad, cantidadMaxima); //Esta funcion me retorna el numero minimo entre AyB...Ej si coloco 60, toma cantidadMaxima que vale 50
 
-            ejecutarRegistro(statement, nombre, descripcion, cantidadParaGuardar, consulta); //Llamado al metodo enviandole parametros...
+                ejecutarRegistro(statement, nombre, descripcion, cantidadParaGuardar, consulta); //Llamado al metodo enviandole parametros...
 
-            //Despues de ejecutar el metodo si el usuario ingreso 60 en cantidad, aqui almacenamos los 10 sobrantes
-            cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
-        } while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
+                //Despues de ejecutar el metodo si el usuario ingreso 60 en cantidad, aqui almacenamos los 10 sobrantes
+                cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
+            } while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
 
+            conexion.commit();
+
+            System.out.println("Transaccion Exitosa!");
+        } catch (Exception e) { //Si sucede un error en la transaccion, La BD Se restablece a su estado original...TODO o NADA!
+
+            conexion.rollback();
+
+            System.out.println("No se pudo completar la Transaccion!");
+        }
+
+        statement.close();
         conexion.close(); //Faltaba cerrar la conexion...
     }
 
     //Insertamos este codigo dentro de un Metodo...
     public void ejecutarRegistro(PreparedStatement statement, String nombre, String descripcion, int cantidad, String consulta) throws SQLException {
-           //Poniendo a prueba las transacciones, para tomar el control de ellas
+
+        //Poniendo a prueba las transacciones, para tomar el control de ellas
         /*if (cantidad < 50) {
             throw new RuntimeException("Ocurrio un error!");
         }*/
-        
         //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
         statement.setString(1, nombre);//Parametro consulta Posicion 1, le enviamos "nombre", que fue el parametro entrante en el map...
         statement.setString(2, descripcion);//Parametro 2, descripcion...
