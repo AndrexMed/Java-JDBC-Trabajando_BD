@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.alura.jdbc.controller.CategoriaController;
 import com.alura.jdbc.controller.ProductoController;
+import com.alura.jdbc.modelo.Producto;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -195,7 +196,6 @@ public class ControlDeStockFrame extends JFrame {
                     /* Cuando damos clic al boton "modificar", ejecuta esta linea que genera una exeption,
                     ya que estamos haciendo un casting explicito invalido, tratando de convertir String a Int
                      */
-                    
                     Integer id = Integer.parseInt(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
                     // En este caso, el método toString() se utiliza para obtener el valor como una cadena de texto,
                     // y luego se utiliza Integer.parseInt() para convertir esa cadena en un entero.
@@ -205,16 +205,16 @@ public class ControlDeStockFrame extends JFrame {
                     Integer cantidad = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 3).toString());
                     /*
                     También tenemos que agregar el campo de cantidad, que no está presente en la lógica pero es importante que también pueda ser modificado.
-                    */
-                    
+                     */
+
                     int filasModificadas;
-                    
-                    try{
-                    filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
-                    } catch(SQLException e){
+
+                    try {
+                        filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
+                    } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-                    
+
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 
@@ -227,7 +227,7 @@ public class ControlDeStockFrame extends JFrame {
 
         Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
                 .ifPresentOrElse(fila -> {
-                    
+
                     //Aqui tambien habia un casting explicito, este seria la conversion Correcta...
                     Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
 
@@ -284,19 +284,21 @@ public class ControlDeStockFrame extends JFrame {
             return;
         }
 
-        // TODO
-        var producto = new HashMap<String, String>();
-        producto.put("NOMBRE", textoNombre.getText());
-        producto.put("DESCRIPCION", textoDescripcion.getText());
-        producto.put("CANTIDAD", String.valueOf(cantidadInt));
+        // Instanciamos la clase Producto, y le enviamos Los parametros al Constructor...Reemplazando el HashMap por una clase...
+        Producto producto = new Producto(textoNombre.getText(),
+                textoDescripcion.getText(),
+                cantidadInt);
 
         var categoria = comboCategoria.getSelectedItem();
 
         try {
+            
             this.productoController.guardar(producto);
+            
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        
         JOptionPane.showMessageDialog(this, "Registrado con éxito!");
 
         this.limpiarFormulario();

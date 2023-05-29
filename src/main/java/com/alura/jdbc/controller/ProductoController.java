@@ -1,6 +1,7 @@
 package com.alura.jdbc.controller;
 
 import com.alura.jdbc.factory.ConnectionFactory;
+import com.alura.jdbc.modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -116,7 +117,7 @@ public class ProductoController {
         }
     }
 
-    public void guardar(Map<String, String> producto) throws SQLException {
+    public void guardar(Producto productoEntrante) throws SQLException {
 
         //Establecemos la conexion, Instanciando la clase.
         final Connection conexion = new ConnectionFactory().recuperarConexion();
@@ -124,12 +125,12 @@ public class ProductoController {
         try (conexion) {
             conexion.setAutoCommit(false); //Este codigo hace que tomemos el control de toda la transaccion...
 
-            // Obtenemos los datos del Map Entrante, en variables...
-            String nombre = producto.get("NOMBRE");
-            String descripcion = producto.get("DESCRIPCION");
-            int cantidad = Integer.valueOf(producto.get("CANTIDAD")); //Convertimos la CANTIDAD, que entra como String, a int...
+            /* Obtenemos los datos del Objeto producto, por medio de sus Getters
+            String nombre = productoEntrante.getNombre();
+            String descripcion = productoEntrante.getDescripcion();
+            int cantidad = productoEntrante.getCantidad(); //Ya no necesitamos la conversion*/
 
-            Integer cantidadMaxima = 50;
+            //Integer cantidadMaxima = 50;
 
             //Almacenamos el nombre de la tabla para mejor organizacion.
             String nombreTabla = "PRODUCTOS";
@@ -144,14 +145,16 @@ public class ProductoController {
             final PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
 
             try (statement) {
-                do {
-                    int cantidadParaGuardar = Math.min(cantidad, cantidadMaxima); //Esta funcion me retorna el numero minimo entre AyB...Ej si coloco 60, toma cantidadMaxima que vale 50
+                
+               // do {
+                    //int cantidadParaGuardar = Math.min(cantidad, cantidadMaxima); //Esta funcion me retorna el numero minimo entre AyB...Ej si coloco 60, toma cantidadMaxima que vale 50
 
-                    ejecutarRegistro(statement, nombre, descripcion, cantidadParaGuardar, consulta); //Llamado al metodo enviandole parametros...
+                    ejecutarRegistro(statement, productoEntrante, consulta); //Llamado al metodo enviandole parametros...
 
                     //Despues de ejecutar el metodo si el usuario ingreso 60 en cantidad, aqui almacenamos los 10 sobrantes
-                    cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
-                } while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
+                    //cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
+                    
+                //} while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
 
                 conexion.commit();
 
@@ -166,16 +169,17 @@ public class ProductoController {
     }
 
     //Insertamos este codigo dentro de un Metodo...
-    public void ejecutarRegistro(PreparedStatement statement, String nombre, String descripcion, int cantidad, String consulta) throws SQLException {
+    public void ejecutarRegistro(PreparedStatement statement, Producto productoEntrante, String consulta) throws SQLException {
 
         //Poniendo a prueba las transacciones, para tomar el control de ellas
         /*if (cantidad < 50) {
             throw new RuntimeException("Ocurrio un error!");
         }*/
+        
         //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
-        statement.setString(1, nombre);//Parametro consulta Posicion 1, le enviamos "nombre", que fue el parametro entrante en el map...
-        statement.setString(2, descripcion);//Parametro 2, descripcion...
-        statement.setInt(3, cantidad); //Parametro 3, Cantidad...
+        statement.setString(1, productoEntrante.getNombre());//Parametro consulta Posicion 1, le enviamos "nombre"
+        statement.setString(2, productoEntrante.getDescripcion());//Parametro 2, descripcion...
+        statement.setInt(3, productoEntrante.getCantidad()); //Parametro 3, Cantidad...
 
         System.out.println(consulta); //Imprimimos la consulta creada en consola...
 
