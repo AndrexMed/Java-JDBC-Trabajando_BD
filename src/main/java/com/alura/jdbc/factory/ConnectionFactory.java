@@ -30,6 +30,8 @@ public class ConnectionFactory {
         pooledDataSource.setUser("Andrex");
         pooledDataSource.setPassword("andres01");
         
+        pooledDataSource.setMaxPoolSize(10);
+        
         this.datasource = pooledDataSource; //Almacenamos 
     }
 
