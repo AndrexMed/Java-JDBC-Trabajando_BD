@@ -5,7 +5,7 @@ package com.alura.jdbc.modelo;
  * @author giova
  */
 public class Producto {
-    
+
     private Integer idProducto;
     private String nombre;
     private String descripcion;
@@ -17,9 +17,8 @@ public class Producto {
         this.descripcion = descripcionEntrante;
         this.cantidad = cantidadEntrante;
     }
-    
-    //Getters
 
+    //Getters
     public String getNombre() {
         return nombre;
     }
@@ -31,6 +30,20 @@ public class Producto {
     public Integer getCantidad() {
         return cantidad;
     }
-    
-    
+
+    public void setId(int idEntrante) {
+        this.idProducto = idEntrante;
+    }
+
+    //Sobrescribiendo el metodo String.format, para especificarle que imprimira...
+    @Override
+    public String toString() {
+        return String.format(
+                "{id: %s, nombre: %s, descripcion: %s, cantidad: %d, mensaje: %s",
+                this.idProducto,
+                this.nombre,
+                this.descripcion,
+                this.cantidad);
+    }
+
 }
