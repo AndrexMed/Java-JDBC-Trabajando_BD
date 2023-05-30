@@ -5,15 +5,21 @@ import com.alura.jdbc.modelo.Producto;
 import com.alura.jdbc.dao.ProductoDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProductoController {
+
+    //Cuando se instancie este Objeto, se inicializa la conexion.
+    private ProductoDAO productoDao;
+
+    //Constructor Para Inicializar cuando se Inicie el ProductoController
+    public ProductoController() {
+
+        this.productoDao = new ProductoDAO(new ConnectionFactory().recuperarConexion());
+
+    }
 
     public int modificar(String nombre, String descripcion, Integer cantidad, Integer idEntrante) throws SQLException {
         // TODO
@@ -78,53 +84,12 @@ public class ProductoController {
         }
     }
 
-    public List<Map<String, String>> listar() throws SQLException {
-
-        // Hacemos una instancia de la clase que contiene el metodo para establecer conexion con la BD.
-        final Connection conexion = new ConnectionFactory().recuperarConexion();
-
-        // Crear la consulta SELECT
-        String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS";
-
-        try (conexion) {
-            // Crear el objeto Statement
-            final PreparedStatement statement = conexion.prepareStatement(consulta);
-
-            try (statement) {
-                // Ejecutar la consulta
-                statement.execute();
-
-                //Obtener los resultados
-                ResultSet resultSet = statement.getResultSet();
-
-                /*Creamos una Lista*/
-                List<Map<String, String>> resultado = new ArrayList<>();
-
-                while (resultSet.next()) { //Se itera sobre los resultados utilizando el método next() del objeto ResultSet*/
-
-                    /*En cada iteración, se crea un nuevo mapa (fila) y se agregan pares clave-valor para cada campo obtenido del resultado actual.*/
-                    Map<String, String> fila = new HashMap<>();
-
-                    fila.put("ID", String.valueOf(resultSet.getInt("ID")));
-                    fila.put("NOMBRE", resultSet.getString("NOMBRE"));
-                    fila.put("DESCRIPCION", resultSet.getString("DESCRIPCION"));
-                    fila.put("CANTIDAD", String.valueOf(resultSet.getInt("CANTIDAD")));
-
-                    //El mapa fila se agrega a la lista resultado.
-                    resultado.add(fila);
-                }
-                return resultado;
-            }
-        }
+    public List<Map<String, String>> listar() throws SQLException {  
+        return productoDao.listar();
     }
 
-    public void guardar(Producto productoEntrante) throws SQLException {
-        
-        ProductoDAO productoDao = new ProductoDAO(new ConnectionFactory().recuperarConexion());
-        
+    public void guardar(Producto productoEntrante) {
         productoDao.guardarProducto(productoEntrante);
     }
-
-
 
 }

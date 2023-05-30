@@ -1,28 +1,33 @@
 package com.alura.jdbc.dao;
 
+import com.alura.jdbc.factory.ConnectionFactory;
 import com.alura.jdbc.modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author giova
  */
 public class ProductoDAO {
-    
+
     final private Connection conexion;
-    
-    //Constructor
-    public ProductoDAO(Connection conexion){
+
+    //Constructor Recibe conexion como parametro...
+    public ProductoDAO(Connection conexion) {
         this.conexion = conexion;
     }
-    
-    public void guardarProducto(Producto productoEntrante) throws SQLException{
+
+    public void guardarProducto(Producto productoEntrante) {
         try (conexion) {
-            
+
             //conexion.setAutoCommit(false); //Este codigo hace que tomemos el control de toda la transaccion...
 
             /* Obtenemos los datos del Objeto producto, por medio de sus Getters
@@ -52,19 +57,19 @@ public class ProductoDAO {
                 //cantidad = cantidad - cantidadMaxima; //Suponiendo el ejemplo anterior aqui quedarian 10...
                 //} while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
                 //conexion.commit();
-
                 System.out.println("Transaccion Exitosa!");
-            } catch (Exception e) { //Si sucede un error en la transaccion, La BD Se restablece a su estado original...TODO o NADA!
+            } catch (SQLException e) { //Si sucede un error en la transaccion, La BD Se restablece a su estado original...TODO o NADA!
 
-                conexion.rollback();
+                throw new RuntimeException(e);
+                //conexion.rollback();
 
-                System.out.println("No se pudo completar la Transaccion!");
+                //System.out.println("No se pudo completar la Transaccion!");
             }
         }
     }
-    
+
     //
-        //Insertamos este codigo dentro de un Metodo...
+    //Insertamos este codigo dentro de un Metodo...
     public void ejecutarRegistro(PreparedStatement statement, Producto productoEntrante, String consulta) throws SQLException {
 
         //Poniendo a prueba las transacciones, para tomar el control de ellas
@@ -94,5 +99,51 @@ public class ProductoDAO {
             }
         }
     }
-    
+
+    public List<Map<String, String>> listar() {
+
+        /*Creamos una Lista*/
+        List<Map<String, String>> resultado = new ArrayList<>();
+
+        // Hacemos una instancia de la clase que contiene el metodo para establecer conexion con la BD.
+        final Connection conexion = new ConnectionFactory().recuperarConexion();
+
+        try (conexion) {
+
+            // Crear la consulta SELECT
+            String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS";
+
+            // Crear el objeto Statement
+            final PreparedStatement statement = conexion.prepareStatement(consulta);
+
+            try (statement) {
+                // Ejecutar la consulta
+                statement.execute();
+
+                //Obtener los resultados
+                final ResultSet resultSet = statement.getResultSet();
+
+                try (resultSet) {
+
+                    while (resultSet.next()) { //Se itera sobre los resultados utilizando el método next() del objeto ResultSet*/
+
+                        /*En cada iteración, se crea un nuevo mapa (fila) y se agregan pares clave-valor para cada campo obtenido del resultado actual.*/
+                        Map<String, String> fila = new HashMap<>();
+
+                        fila.put("ID", String.valueOf(resultSet.getInt("ID")));
+                        fila.put("NOMBRE", resultSet.getString("NOMBRE"));
+                        fila.put("DESCRIPCION", resultSet.getString("DESCRIPCION"));
+                        fila.put("CANTIDAD", String.valueOf(resultSet.getInt("CANTIDAD")));
+
+                        //El mapa fila se agrega a la lista resultado.
+                        resultado.add(fila);
+                    }
+                }
+            }
+            return resultado;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
