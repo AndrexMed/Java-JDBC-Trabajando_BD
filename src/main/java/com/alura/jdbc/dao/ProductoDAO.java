@@ -1,6 +1,5 @@
-package com.alura.jdbc.persistencia;
+package com.alura.jdbc.dao;
 
-import com.alura.jdbc.factory.ConnectionFactory;
 import com.alura.jdbc.modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
