@@ -12,20 +12,16 @@ import java.sql.Statement;
  *
  * @author giova
  */
-public class PersistenciaProducto {
+public class ProductoDAO {
     
-    private Connection conexion;
+    final private Connection conexion;
     
     //Constructor
-    public PersistenciaProducto(Connection conexion){
+    public ProductoDAO(Connection conexion){
         this.conexion = conexion;
     }
     
     public void guardarProducto(Producto productoEntrante) throws SQLException{
-        
-        //Establecemos la conexion, Instanciando la clase.
-        final Connection conexion = new ConnectionFactory().recuperarConexion();
-
         try (conexion) {
             
             //conexion.setAutoCommit(false); //Este codigo hace que tomemos el control de toda la transaccion...

@@ -2,7 +2,7 @@ package com.alura.jdbc.controller;
 
 import com.alura.jdbc.factory.ConnectionFactory;
 import com.alura.jdbc.modelo.Producto;
-import com.alura.jdbc.persistencia.PersistenciaProducto;
+import com.alura.jdbc.persistencia.ProductoDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -120,7 +120,7 @@ public class ProductoController {
 
     public void guardar(Producto productoEntrante) throws SQLException {
         
-        PersistenciaProducto persistenciaProducto = new PersistenciaProducto(new ConnectionFactory().recuperarConexion());
+        ProductoDAO persistenciaProducto = new ProductoDAO(new ConnectionFactory().recuperarConexion());
         
         persistenciaProducto.guardarProducto(productoEntrante);
     }
