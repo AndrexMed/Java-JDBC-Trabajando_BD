@@ -99,13 +99,15 @@ public class ProductoDAO {
                 productoEntrante.setId(resultSet.getInt(1));
                 System.out.println(String.format("Se inserto el producto: %s", productoEntrante)); //Esto solo imprimiria la referencia en memoria, por eso sobreescribiremos el metodo toString();
             }
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
     }
 
-    public List<Map<String, String>> listar() {
+    public List<Producto> listar() {
 
         /*Creamos una Lista*/
-        List<Map<String, String>> resultado = new ArrayList<>();
+        List<Producto> resultado = new ArrayList<>();
 
         // Hacemos una instancia de la clase que contiene el metodo para establecer conexion con la BD.
         final Connection conexion = new ConnectionFactory().recuperarConexion();
@@ -130,12 +132,10 @@ public class ProductoDAO {
                     while (resultSet.next()) { //Se itera sobre los resultados utilizando el método next() del objeto ResultSet*/
 
                         /*En cada iteración, se crea un nuevo mapa (fila) y se agregan pares clave-valor para cada campo obtenido del resultado actual.*/
-                        Map<String, String> fila = new HashMap<>();
-
-                        fila.put("ID", String.valueOf(resultSet.getInt("ID")));
-                        fila.put("NOMBRE", resultSet.getString("NOMBRE"));
-                        fila.put("DESCRIPCION", resultSet.getString("DESCRIPCION"));
-                        fila.put("CANTIDAD", String.valueOf(resultSet.getInt("CANTIDAD")));
+                        Producto fila = new Producto(resultSet.getInt("ID"),
+                        resultSet.getString("NOMBRE"),
+                        resultSet.getString("DESCRIPCION"),
+                        resultSet.getInt("CANTIDAD"));
 
                         //El mapa fila se agrega a la lista resultado.
                         resultado.add(fila);

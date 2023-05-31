@@ -18,6 +18,13 @@ public class Producto {
         this.cantidad = cantidadEntrante;
     }
 
+    public Producto(int idEntrante, String nombreEntrante, String descripcionEntrante, int cantidadEntrante) {
+        this.idProducto = idEntrante;
+        this.nombre = nombreEntrante;
+        this.descripcion = descripcionEntrante;
+        this.cantidad = cantidadEntrante;
+    }
+
     //Getters
     public String getNombre() {
         return nombre;
@@ -31,6 +38,10 @@ public class Producto {
         return cantidad;
     }
 
+    public Object getId() {
+        return this.idProducto;
+    }
+
     public void setId(int idEntrante) {
         this.idProducto = idEntrante;
     }
@@ -39,7 +50,7 @@ public class Producto {
     @Override
     public String toString() {
         return String.format(
-                "{id: %s, nombre: %s, descripcion: %s, cantidad: %d, mensaje: %s",
+                "{id: %s, nombre: %s, descripcion: %s, cantidad: %d",
                 this.idProducto,
                 this.nombre,
                 this.descripcion,
