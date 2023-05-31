@@ -21,7 +21,7 @@ public class CategoriaDAO {
         this.conexion = conexionEntrante;
     }
 
-   /* public List<Categoria> listar() {
+    public List<Categoria> listar() {
         List<Categoria> resultado = new ArrayList<>();
 
         try {
@@ -29,38 +29,10 @@ public class CategoriaDAO {
 
             System.out.println(consulta);
 
-            final PreparedStatement statement = conexion.prepareCall(consulta);
+            final PreparedStatement statement = conexion.prepareStatement(consulta);
 
             try (statement) {
 
-                final ResultSet resultSet = statement.executeQuery();
-
-                try (resultSet) {
-                    while (resultSet.next()) {
-                        resultado.add(new Categoria(
-                                resultSet.getInt("IDCAGEGORIA"),
-                                resultSet.getString("NOMBRE")));
-                    }
-                };
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return resultado;
-    }*/
-    
-     public List<Categoria> listar() {
-        List<Categoria> resultado = new ArrayList<>();
-
-        try {
-            String sql = "SELECT IDCATEGORIA, NOMBRECAT FROM CATEGORIAS";
-            
-            System.out.println(sql);
-            
-            final PreparedStatement statement = conexion
-                    .prepareStatement(sql);
-
-            try (statement) {
                 final ResultSet resultSet = statement.executeQuery();
 
                 try (resultSet) {
@@ -69,12 +41,11 @@ public class CategoriaDAO {
                                 resultSet.getInt("IDCATEGORIA"),
                                 resultSet.getString("NOMBRECAT")));
                     }
-                }
+                };
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return resultado;
     }
 
