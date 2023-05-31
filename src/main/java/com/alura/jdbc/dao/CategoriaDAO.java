@@ -21,29 +21,60 @@ public class CategoriaDAO {
         this.conexion = conexionEntrante;
     }
 
-    public List<Categoria> listar() {
+   /* public List<Categoria> listar() {
         List<Categoria> resultado = new ArrayList<>();
 
-        String consulta = "SELECT IDCATEGORIA, NOMBRECAT FROM CATEGORIAS";
-
         try {
+            String consulta = "SELECT IDCATEGORIA, NOMBRECAT FROM CATEGORIAS";
+
+            System.out.println(consulta);
+
             final PreparedStatement statement = conexion.prepareCall(consulta);
 
             try (statement) {
+
                 final ResultSet resultSet = statement.executeQuery();
 
                 try (resultSet) {
-                    while (resultSet.next()){
-                        var categoria = new Categoria(resultSet.getInt("IDCATEGORIA"),
-                        resultSet.getString("NOMBRECAT"));
-                        
-                        resultado.add(categoria);
+                    while (resultSet.next()) {
+                        resultado.add(new Categoria(
+                                resultSet.getInt("IDCAGEGORIA"),
+                                resultSet.getString("NOMBRE")));
                     }
                 };
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return resultado;
+    }*/
+    
+     public List<Categoria> listar() {
+        List<Categoria> resultado = new ArrayList<>();
+
+        try {
+            String sql = "SELECT IDCATEGORIA, NOMBRECAT FROM CATEGORIAS";
+            
+            System.out.println(sql);
+            
+            final PreparedStatement statement = conexion
+                    .prepareStatement(sql);
+
+            try (statement) {
+                final ResultSet resultSet = statement.executeQuery();
+
+                try (resultSet) {
+                    while (resultSet.next()) {
+                        resultado.add(new Categoria(
+                                resultSet.getInt("IDCATEGORIA"),
+                                resultSet.getString("NOMBRECAT")));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         return resultado;
     }
 

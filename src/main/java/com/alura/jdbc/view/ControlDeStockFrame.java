@@ -102,7 +102,7 @@ public class ControlDeStockFrame extends JFrame {
 
         // TODO
         var categorias = this.categoriaController.listar();
-        // categorias.forEach(categoria -> comboCategoria.addItem(categoria));
+        categorias.forEach(categoria -> comboCategoria.addItem(categoria));
 
         textoNombre.setBounds(10, 25, 265, 20);
         textoDescripcion.setBounds(10, 65, 265, 20);
