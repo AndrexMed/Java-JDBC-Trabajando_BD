@@ -65,7 +65,6 @@ public class ProductoDAO {
             //e.printStackTrace();
 
             //conexion.rollback();
-
             //System.out.println("No se pudo completar la Transaccion!");
         }
     }
@@ -99,7 +98,7 @@ public class ProductoDAO {
                 productoEntrante.setId(resultSet.getInt(1));
                 System.out.println(String.format("Se inserto el producto: %s", productoEntrante)); //Esto solo imprimiria la referencia en memoria, por eso sobreescribiremos el metodo toString();
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -133,9 +132,9 @@ public class ProductoDAO {
 
                         /*En cada iteración, se crea un nuevo mapa (fila) y se agregan pares clave-valor para cada campo obtenido del resultado actual.*/
                         Producto fila = new Producto(resultSet.getInt("ID"),
-                        resultSet.getString("NOMBRE"),
-                        resultSet.getString("DESCRIPCION"),
-                        resultSet.getInt("CANTIDAD"));
+                                resultSet.getString("NOMBRE"),
+                                resultSet.getString("DESCRIPCION"),
+                                resultSet.getInt("CANTIDAD"));
 
                         //El mapa fila se agrega a la lista resultado.
                         resultado.add(fila);
@@ -168,7 +167,42 @@ public class ProductoDAO {
 
                 return statement.getUpdateCount(); //Retorna un INT con el num de filas modificadas...
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int modificar(String nombreEntrante, String descripcionEntrante, Integer cantidadEntrante, Integer idEntrante) {
+
+        try {
+            //Creamos la consulta SQL Para Actualizar datos...
+            String consultaForma1 = "UPDATE PRODUCTOS SET NOMBRE = ?, DESCRIPCION = ?, CANTIDAD = ? WHERE ID = ?";
+            String consultaForma2 = "UPDATE PRODUCTOS SET "
+                    + "nombre = ?,"
+                    + "descripcion = ?,"
+                    + "cantidad = ?"
+                    + " WHERE id = ?";
+
+            //Creamos un objeto de tipo PreparedStatement llamado statement utilizando una conexión establecida previamente (conexion).
+            final PreparedStatement statement = conexion.prepareStatement(consultaForma1);
+
+            try (statement) {
+                /*Este código se utiliza para asignar valores a los parámetros de un PreparedStatement en Java,
+        lo que permitirá ejecutar consultas SQL parametrizadas con los valores especificados.*/
+                statement.setString(1, nombreEntrante);
+                statement.setString(2, descripcionEntrante);
+                statement.setInt(3, cantidadEntrante);
+                statement.setInt(4, idEntrante);
+
+                statement.execute();
+
+                int updateCount = statement.getUpdateCount();
+
+                System.out.println("Se actualizo un dato con el id: " + idEntrante);
+
+                return updateCount;
+            }
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

@@ -21,41 +21,8 @@ public class ProductoController {
 
     }
 
-    public int modificar(String nombre, String descripcion, Integer cantidad, Integer idEntrante) throws SQLException {
-        // TODO
-
-        //Creamos la conexion...
-        final Connection conexion = new ConnectionFactory().recuperarConexion();
-
-        try (conexion) {
-            //Creamos la consulta SQL Para Actualizar datos...
-            String consultaForma1 = "UPDATE PRODUCTOS SET NOMBRE = ?, DESCRIPCION = ?, CANTIDAD = ? WHERE ID = ?";
-            String consultaForma2 = "UPDATE PRODUCTOS SET "
-                    + "nombre = ?,"
-                    + "descripcion = ?,"
-                    + "cantidad = ?"
-                    + " WHERE id = ?";
-
-            //Creamos un objeto de tipo PreparedStatement llamado statement utilizando una conexión establecida previamente (conexion).
-            final PreparedStatement statement = conexion.prepareStatement(consultaForma1);
-
-            try (statement) {
-                /*Este código se utiliza para asignar valores a los parámetros de un PreparedStatement en Java,
-        lo que permitirá ejecutar consultas SQL parametrizadas con los valores especificados.*/
-                statement.setString(1, nombre);
-                statement.setString(2, descripcion);
-                statement.setInt(3, cantidad);
-                statement.setInt(4, idEntrante);
-
-                statement.execute();
-
-                int updateCount = statement.getUpdateCount();
-
-                System.out.println("Se actualizo un dato con el id: " + idEntrante);
-
-                return updateCount;
-            }
-        }
+    public int modificar(String nombreEntrante, String descripcionEntrante, Integer cantidadEntrante, Integer idEntrante) {  
+        return productoDao.modificar(nombreEntrante, descripcionEntrante, cantidadEntrante, idEntrante);
     }
 
     public int eliminar(Integer idEntrante) {

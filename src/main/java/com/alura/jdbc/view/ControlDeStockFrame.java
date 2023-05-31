@@ -211,11 +211,7 @@ public class ControlDeStockFrame extends JFrame {
 
                     int filasModificadas;
 
-                    try {
                         filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
 
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
