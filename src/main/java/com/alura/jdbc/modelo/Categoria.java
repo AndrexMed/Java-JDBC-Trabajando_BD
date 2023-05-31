@@ -14,6 +14,11 @@ public class Categoria {
         this.nombreCat = nombreEntrante;
     }
 
+    public Integer getIdCategoria() {
+        return idCategoria;
+    }
+    
+
     //Esta sobrescritura se hizo para mostrar los nombres de las categorias en la app...
     @Override
     public String toString() {

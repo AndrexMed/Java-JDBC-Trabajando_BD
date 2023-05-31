@@ -10,6 +10,7 @@ public class Producto {
     private String nombre;
     private String descripcion;
     private Integer cantidad;
+    private Integer idCategoria;
 
     //Constructor...
     public Producto(String nombreEntrante, String descripcionEntrante, Integer cantidadEntrante) {
@@ -46,6 +47,15 @@ public class Producto {
     public void setId(int idEntrante) {
         this.idProducto = idEntrante;
     }
+
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public Integer getIdCategoria() {
+        return idCategoria;
+    }
+    
 
     //Sobrescribiendo el metodo String.format, para especificarle que imprimira...
     @Override

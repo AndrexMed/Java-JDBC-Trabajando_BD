@@ -98,7 +98,7 @@ public class ControlDeStockFrame extends JFrame {
         textoDescripcion = new JTextField();
         textoCantidad = new JTextField();
         comboCategoria = new JComboBox<>();
-        comboCategoria.addItem(new Categoria(0,"Elige una Categoría"));
+        comboCategoria.addItem(new Categoria(0, "Elige una Categoría"));
 
         // TODO
         var categorias = this.categoriaController.listar();
@@ -208,7 +208,7 @@ public class ControlDeStockFrame extends JFrame {
 
                     int filasModificadas;
 
-                        filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
+                    filasModificadas = this.productoController.modificar(nombre, descripcion, cantidad, id);
 
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
@@ -271,13 +271,19 @@ public class ControlDeStockFrame extends JFrame {
                 textoDescripcion.getText(),
                 cantidadInt);
 
-        var categoria = comboCategoria.getSelectedItem();
+        try {
+            //Logica Categoria
+            var categoria = (Categoria) comboCategoria.getSelectedItem(); //Casting Explicito
 
-        this.productoController.guardar(producto);
+            this.productoController.guardar(producto, categoria.getIdCategoria());
 
-        JOptionPane.showMessageDialog(this, "Registrado con éxito!");
+            JOptionPane.showMessageDialog(this, "Registrado con éxito!");
 
-        this.limpiarFormulario();
+            this.limpiarFormulario();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Categoria Obligatoria!");
+        }
+
     }
 
     private void limpiarFormulario() {
