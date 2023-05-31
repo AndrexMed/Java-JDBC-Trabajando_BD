@@ -17,11 +17,8 @@ import javax.swing.table.DefaultTableModel;
 
 import com.alura.jdbc.controller.CategoriaController;
 import com.alura.jdbc.controller.ProductoController;
+import com.alura.jdbc.modelo.Categoria;
 import com.alura.jdbc.modelo.Producto;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class ControlDeStockFrame extends JFrame {
 
@@ -29,7 +26,7 @@ public class ControlDeStockFrame extends JFrame {
 
     private JLabel labelNombre, labelDescripcion, labelCantidad, labelCategoria;
     private JTextField textoNombre, textoDescripcion, textoCantidad;
-    private JComboBox<Object> comboCategoria;
+    private JComboBox<Categoria> comboCategoria;
     private JButton botonGuardar, botonModificar, botonLimpiar, botonEliminar, botonReporte;
     private JTable tabla;
     private DefaultTableModel modelo;
@@ -101,7 +98,7 @@ public class ControlDeStockFrame extends JFrame {
         textoDescripcion = new JTextField();
         textoCantidad = new JTextField();
         comboCategoria = new JComboBox<>();
-        comboCategoria.addItem("Elige una Categoría");
+        comboCategoria.addItem(new Categoria(0,"Elige una Categoría"));
 
         // TODO
         var categorias = this.categoriaController.listar();
