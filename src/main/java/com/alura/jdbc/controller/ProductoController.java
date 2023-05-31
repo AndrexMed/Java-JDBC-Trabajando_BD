@@ -3,11 +3,7 @@ package com.alura.jdbc.controller;
 import com.alura.jdbc.factory.ConnectionFactory;
 import com.alura.jdbc.modelo.Producto;
 import com.alura.jdbc.dao.ProductoDAO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public class ProductoController {
 
