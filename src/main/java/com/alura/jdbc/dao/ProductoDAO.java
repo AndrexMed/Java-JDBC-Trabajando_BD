@@ -1,6 +1,5 @@
 package com.alura.jdbc.dao;
 
-import com.alura.jdbc.factory.ConnectionFactory;
 import com.alura.jdbc.modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,9 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -26,7 +23,7 @@ public class ProductoDAO {
     }
 
     public void guardarProducto(Producto productoEntrante) {
-        try (conexion) {
+        try {
 
             //conexion.setAutoCommit(false); //Este codigo hace que tomemos el control de toda la transaccion...
 
@@ -45,7 +42,7 @@ public class ProductoDAO {
             /*Se crea un objeto Statement llamado "statement" utilizando el método "createStatement()"
         de la conexión. Un objeto Statement se utiliza para ejecutar instrucciones SQL en la base de datos.*/
             //Cambiamos el createStatement por PreparedStatement, ya que este nos previene se Inyecciones SQL
-            final PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = conexion.prepareStatement(consulta, Statement.RETURN_GENERATED_KEYS);
 
             try (statement) {
 
@@ -108,10 +105,7 @@ public class ProductoDAO {
         /*Creamos una Lista*/
         List<Producto> resultado = new ArrayList<>();
 
-        // Hacemos una instancia de la clase que contiene el metodo para establecer conexion con la BD.
-        final Connection conexion = new ConnectionFactory().recuperarConexion();
-
-        try (conexion) {
+        try {
 
             // Crear la consulta SELECT
             String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS";
@@ -153,7 +147,7 @@ public class ProductoDAO {
         //Consulta sql
         String consulta = "DELETE FROM PRODUCTOS WHERE ID = ?";
 
-        try (conexion) {
+        try {
             final PreparedStatement statement = conexion.prepareStatement(consulta);
 
             try (statement) {
