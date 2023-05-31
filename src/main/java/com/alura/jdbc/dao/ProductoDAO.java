@@ -148,4 +148,29 @@ public class ProductoDAO {
         }
     }
 
+    //Metodo Eliminar
+    public int eliminar(Integer idEntrante) {
+
+        //Consulta sql
+        String consulta = "DELETE FROM PRODUCTOS WHERE ID = ?";
+
+        try (conexion) {
+            final PreparedStatement statement = conexion.prepareStatement(consulta);
+
+            try (statement) {
+                //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
+                statement.setInt(1, idEntrante);
+
+                //Ejecutamos la consulta...
+                statement.execute();
+
+                System.out.println("Se elimino el producto: " + idEntrante);
+
+                return statement.getUpdateCount(); //Retorna un INT con el num de filas modificadas...
+            }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
 }

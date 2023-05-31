@@ -58,30 +58,8 @@ public class ProductoController {
         }
     }
 
-    public int eliminar(Integer idEntrante) throws SQLException {
-        // TODO
-
-        //Creamos la conexion instanciando la clase...
-        final Connection conexion = new ConnectionFactory().recuperarConexion();
-
-        //Consulta sql
-        String consulta = "DELETE FROM PRODUCTOS WHERE ID = ?";
-
-        try (conexion) {
-            final PreparedStatement statement = conexion.prepareStatement(consulta);
-
-            try (statement) {
-                //Al utilizar Prepared, necesitamos enviarle el parametro a la nueva Consulta de esta forma...
-                statement.setInt(1, idEntrante);
-
-                //Ejecutamos la consulta...
-                statement.execute();
-
-                System.out.println("Se elimino el producto: " + idEntrante);
-
-                return statement.getUpdateCount(); //Retorna un INT con el num de filas modificadas...
-            }
-        }
+    public int eliminar(Integer idEntrante) {
+        return productoDao.eliminar(idEntrante);
     }
 
     public List<Producto> listar() {  

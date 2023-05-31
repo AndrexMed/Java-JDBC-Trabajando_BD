@@ -231,19 +231,15 @@ public class ControlDeStockFrame extends JFrame {
                 .ifPresentOrElse(fila -> {
 
                     //Aqui tambien habia un casting explicito, este seria la conversion Correcta...
-                    Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+                    Integer idSeleccionado = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
 
                     int cantidadEliminada;
 
-                    try {
-                        cantidadEliminada = this.productoController.eliminar(id);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    cantidadEliminada = this.productoController.eliminar(idSeleccionado);
 
                     modelo.removeRow(tabla.getSelectedRow());
 
-                    JOptionPane.showMessageDialog(this, cantidadEliminada + " Item eliminado con éxito!");
+                    JOptionPane.showMessageDialog(this, String.format("%d Item eliminado con éxito!", cantidadEliminada));
                 }, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
     }
 
