@@ -58,13 +58,15 @@ public class ProductoDAO {
                 //} while (cantidad > 0); //Volveria a ejecutarse ya que cantidad es mayor que 0 siendo 10 su valor nuevo...
                 //conexion.commit();
                 System.out.println("Transaccion Exitosa!");
-            } catch (SQLException e) { //Si sucede un error en la transaccion, La BD Se restablece a su estado original...TODO o NADA!
-
-                throw new RuntimeException(e);
-                //conexion.rollback();
-
-                //System.out.println("No se pudo completar la Transaccion!");
             }
+        } catch (SQLException e) { //Si sucede un error en la transaccion, La BD Se restablece a su estado original...TODO o NADA!
+
+            throw new RuntimeException(e);
+            //e.printStackTrace();
+
+            //conexion.rollback();
+
+            //System.out.println("No se pudo completar la Transaccion!");
         }
     }
 

@@ -19,7 +19,9 @@ import com.alura.jdbc.controller.CategoriaController;
 import com.alura.jdbc.controller.ProductoController;
 import com.alura.jdbc.modelo.Producto;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ControlDeStockFrame extends JFrame {
 
@@ -246,26 +248,24 @@ public class ControlDeStockFrame extends JFrame {
     }
 
     private void cargarTabla() {
+
+        List<Map<String, String>> productos = new ArrayList<Map<String, String>>();
+
         try {
-            var productos = this.productoController.listar(); //Se llama al método listar() del controlador de productos (productoController) para obtener una lista de productos, Ejecuta una consulta SELECT en la base de datos y devuelve los resultados como una lista de mapas.
-
-            try {
-                // Se itera sobre la lista de productos utilizando el método forEach().
-                //Dentro del bucle, se accede a los valores de cada producto utilizando los nombres de los campos como claves en el mapa (producto.get("ID"), producto.get("NOMBRE"), etc.).
-                //Se agrega una nueva fila a la tabla (modelo.addRow(...)) utilizando los valores obtenidos del producto actual. Los valores se pasan como un array de objetos en el orden correspondiente a las columnas de la tabla.
-                productos.forEach(producto -> modelo.addRow(new Object[]{
-                    producto.get("ID"),
-                    producto.get("NOMBRE"),
-                    producto.get("DESCRIPCION"),
-                    producto.get("CANTIDAD")
-                }));
-            } catch (Exception e) {
-                throw e;
-            }
-
+            productos = this.productoController.listar(); //Se llama al método listar() del controlador de productos (productoController) para obtener una lista de productos, Ejecuta una consulta SELECT en la base de datos y devuelve los resultados como una lista de mapas.
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
+
+        // Se itera sobre la lista de productos utilizando el método forEach().
+        //Dentro del bucle, se accede a los valores de cada producto utilizando los nombres de los campos como claves en el mapa (producto.get("ID"), producto.get("NOMBRE"), etc.).
+        //Se agrega una nueva fila a la tabla (modelo.addRow(...)) utilizando los valores obtenidos del producto actual. Los valores se pasan como un array de objetos en el orden correspondiente a las columnas de la tabla.
+        productos.forEach(producto -> modelo.addRow(new Object[]{
+            producto.get("ID"),
+            producto.get("NOMBRE"),
+            producto.get("DESCRIPCION"),
+            producto.get("CANTIDAD")}));
     }
 
     private void guardar() {
@@ -290,9 +290,9 @@ public class ControlDeStockFrame extends JFrame {
                 cantidadInt);
 
         var categoria = comboCategoria.getSelectedItem();
-            
-            this.productoController.guardar(producto);
-            
+
+        this.productoController.guardar(producto);
+
         JOptionPane.showMessageDialog(this, "Registrado con éxito!");
 
         this.limpiarFormulario();

@@ -38,6 +38,7 @@ public class ConnectionFactory {
     //Se encarga de devolver una conexión de la base de datos.
     //Utiliza el método getConnection() del objeto dataSource para obtener una conexión del pool de conexiones.
     public Connection recuperarConexion() throws SQLException {
+        //La idea de este try es evitar la replicacion del mismo en toda la app...
         try{
         return this.datasource.getConnection();
         } catch (SQLException e){

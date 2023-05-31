@@ -84,7 +84,7 @@ public class ProductoController {
         }
     }
 
-    public List<Map<String, String>> listar() throws SQLException {  
+    public List<Map<String, String>> listar() {  
         return productoDao.listar();
     }
 
