@@ -49,4 +49,45 @@ public class CategoriaDAO {
         return resultado;
     }
 
+    public List<Categoria> listarConProductos() {
+
+        List<Categoria> resultado = new ArrayList<>();
+
+        try {
+            String consulta = "SELECT IDCATEGORIA, NOMBRECAT, IDCATEGORIAFK, NOMBRE, CANTIDAD"
+                    + " FROM CATEGORIAS "
+                    + "INNER JOIN PRODUCTOS ON CATEGORIAS.IDCATEGORIA = PRODUCTOS.IDCATEGORIAFK";
+
+            System.out.println(consulta);
+
+            final PreparedStatement statement = conexion.prepareStatement(consulta);
+
+            try (statement) {
+
+                final ResultSet resultSet = statement.executeQuery();
+
+                try (resultSet) {
+                    while (resultSet.next()) {
+                        Integer idCategoria = resultSet.getInt("IDCATEGORIA");
+                        String nombreCat = resultSet.getString("NOMBRECAT");
+
+                        var categoria = resultado
+                                .stream()
+                                .filter(cat -> cat.getIdCategoria().equals(idCategoria))
+                                .findAny().orElseGet(() -> {
+                                    Categoria cat = new Categoria(idCategoria, nombreCat);
+
+                                    resultado.add(cat);
+                                    return cat;
+                                });
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultado;
+    }
+
 }

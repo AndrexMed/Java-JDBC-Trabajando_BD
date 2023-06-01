@@ -211,6 +211,7 @@ public class ProductoDAO {
             // Crear la consulta SELECT
             String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS WHERE IDCATEGORIAFK = ?";
                     
+            System.out.println(consulta);
 
             // Crear el objeto Statement
             final PreparedStatement statement = conexion.prepareStatement(consulta);
