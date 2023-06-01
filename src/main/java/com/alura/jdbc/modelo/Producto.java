@@ -26,6 +26,13 @@ public class Producto {
         this.descripcion = descripcionEntrante;
         this.cantidad = cantidadEntrante;
     }
+    
+    //SobrecargaContructor
+    public Producto(int idEntrante, String nombreEntrante, int cantidadEntrante) {
+        this.idProducto = idEntrante;
+        this.nombre = nombreEntrante;
+        this.cantidad = cantidadEntrante;
+    }
 
     //Getters
     public String getNombre() {

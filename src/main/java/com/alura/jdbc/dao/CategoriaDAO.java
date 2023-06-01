@@ -1,6 +1,7 @@
 package com.alura.jdbc.dao;
 
 import com.alura.jdbc.modelo.Categoria;
+import com.alura.jdbc.modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,9 +55,10 @@ public class CategoriaDAO {
         List<Categoria> resultado = new ArrayList<>();
 
         try {
-            String consulta = "SELECT IDCATEGORIA, NOMBRECAT, IDCATEGORIAFK, NOMBRE, CANTIDAD"
-                    + " FROM CATEGORIAS "
-                    + "INNER JOIN PRODUCTOS ON CATEGORIAS.IDCATEGORIA = PRODUCTOS.IDCATEGORIAFK";
+            // Aquí se define la consulta SQL para obtener los datos de las categorías y los productos.
+            String consulta = "SELECT C.IDCATEGORIA, C.NOMBRECAT, P.IDCATEGORIAFK, P.ID, P.NOMBRE, P.CANTIDAD "
+                    + "FROM CATEGORIAS C "
+                    + "INNER JOIN PRODUCTOS P ON C.IDCATEGORIA = P.IDCATEGORIAFK";
 
             System.out.println(consulta);
 
@@ -68,6 +70,7 @@ public class CategoriaDAO {
 
                 try (resultSet) {
                     while (resultSet.next()) {
+                         // Se extraen los valores de las columnas del resultado de la consulta.
                         Integer idCategoria = resultSet.getInt("IDCATEGORIA");
                         String nombreCat = resultSet.getString("NOMBRECAT");
 
@@ -75,11 +78,18 @@ public class CategoriaDAO {
                                 .stream()
                                 .filter(cat -> cat.getIdCategoria().equals(idCategoria))
                                 .findAny().orElseGet(() -> {
+                                     // Si la categoría no existe en la lista resultado, se crea una nueva categoría y se agrega a la lista.
                                     Categoria cat = new Categoria(idCategoria, nombreCat);
 
                                     resultado.add(cat);
                                     return cat;
                                 });
+                        
+                        Producto producto = new Producto(resultSet.getInt("ID"),
+                        resultSet.getString("NOMBRE"),
+                        resultSet.getInt("CANTIDAD"));   
+                        
+                        categoria.agregar(producto);
                     }
                 }
             }
