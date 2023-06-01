@@ -23,9 +23,9 @@ public class CategoriaController {
         return categoriaDao.listar();
     }
 
-    public List<?> cargaReporte() {
+    public List<Categoria> cargaReporte() {
         // TODO
-        return new ArrayList<>();
+        return this.listar();
     }
 
 }

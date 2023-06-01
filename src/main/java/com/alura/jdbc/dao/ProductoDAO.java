@@ -1,5 +1,6 @@
 package com.alura.jdbc.dao;
 
+import com.alura.jdbc.modelo.Categoria;
 import com.alura.jdbc.modelo.Producto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -134,10 +135,10 @@ public class ProductoDAO {
                     }
                 }
             }
-            return resultado;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return resultado;
     }
 
     //Metodo Eliminar
@@ -198,6 +199,49 @@ public class ProductoDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //Metodo Sobrecargado
+    public List<Producto> listar(Categoria idCategoria) {
+        /*Creamos una Lista*/
+        List<Producto> resultado = new ArrayList<>();
+
+        try {
+
+            // Crear la consulta SELECT
+            String consulta = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD FROM PRODUCTOS WHERE IDCATEGORIAFK = ?";
+                    
+
+            // Crear el objeto Statement
+            final PreparedStatement statement = conexion.prepareStatement(consulta);
+
+            try (statement) {
+                statement.setInt(1, idCategoria.getIdCategoria());
+                // Ejecutar la consulta
+                statement.execute();
+
+                //Obtener los resultados
+                final ResultSet resultSet = statement.getResultSet();
+
+                try (resultSet) {
+
+                    while (resultSet.next()) { //Se itera sobre los resultados utilizando el método next() del objeto ResultSet*/
+
+                        /*En cada iteración, se crea un nuevo mapa (fila) y se agregan pares clave-valor para cada campo obtenido del resultado actual.*/
+                        Producto fila = new Producto(resultSet.getInt("ID"),
+                                resultSet.getString("NOMBRE"),
+                                resultSet.getString("DESCRIPCION"),
+                                resultSet.getInt("CANTIDAD"));
+
+                        //El mapa fila se agrega a la lista resultado.
+                        resultado.add(fila);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultado;
     }
 
 }
